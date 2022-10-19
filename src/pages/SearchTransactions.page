@@ -1,0 +1,65 @@
+<apex:page controller="SearchTransactionsController" doctype="html-5.0">
+   <apex:form >
+       <apex:pageBlock title="Search for Transaction">
+           <apex:pageBlockSection title="Enter Amount Between">
+                <apex:pageBlockSectionItem >
+                   <apex:outputLabel value="Minimum Amount" for="minAmount"/> 
+                   <apex:input label="Minimum Amount" value="{!minAmount}" id="minAmount" type="number" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                   <apex:outputLabel value="Maximum Amount" for="maxAmount"/> 
+                   <apex:input label="Maximum Amount" value="{!maxAmount}" id="maxAmount" type="number" required="true"/> 
+                </apex:pageBlockSectionItem>           
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockSection title="Enter Date Between"> 
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Start Date" for="startDate"/>  
+                  <apex:input id="startDate" type="date" value="{!startDate}" />
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="End Date" for="endDate"/>   
+                  <apex:input id="endDate" type="date" value="{!endDate}" />
+               </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockSection title="Enter Entry Name">
+               <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Entry Name" for="entryName"/> 
+                  <apex:input id="entryName" type="text" value="{!entryName}" />
+               </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockSection title="Enter Status">
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Status" for="status"/> 
+                    <apex:selectList id="status" value="{!status}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!items}"/>
+                    </apex:selectList>
+               </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockSection title="Enter Account Number">
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Account Number" for="accNumber"/> 
+                    <apex:input id="accNumber" type="text" value="{!accNumber}" required="true" />
+               </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockButtons location="bottom" style="align:'Center'">
+                <apex:outputLabel value="Press Search to view Transactions" for="search"/> 
+                <apex:commandButton action="{!getTransactionRecords}" value="Search" id="search"/>
+           </apex:pageBlockButtons>  
+       </apex:pageBlock>
+       <apex:pageBlock >
+           <apex:pageBlockTable value="{!listTransactions}" rendered="{! IF(ISBLANK(listTransactions), false, true) }" var="entry">
+               <apex:column value="{!entry.name}" />
+               <apex:column value="{!entry.Type__c}" />
+               <apex:column value="{!entry.Status__c}" />
+               <apex:column value="{!entry.Amount__c}" />
+               <apex:column value="{!entry.Transaction_Date__c}" />               
+               <apex:column value="{!entry.Contact__r.Account_Number__c}" />
+           </apex:pageBlockTable>
+       </apex:pageBlock>
+   </apex:form> 
+</apex:page>

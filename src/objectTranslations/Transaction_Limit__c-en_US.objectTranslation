@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Transaction Limit</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Transaction Limits</value>
+    </caseValues>
+    <fields>
+        <label><!-- Maximum Debit Allowed per Day --></label>
+        <name>Maximum_Debit_Allowed_per_Day__c</name>
+    </fields>
+    <fields>
+        <label><!-- Maximum Debit Allowed per Month --></label>
+        <name>Maximum_Debit_Allowed_per_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Maximum Debit Allowed per Transaction --></label>
+        <name>Maximum_Debit_Allowed_per_Transaction__c</name>
+    </fields>
+    <fields>
+        <label><!-- Maximum Transactions Allowed per Day --></label>
+        <name>Maximum_Transactions_Allowed_per_Day__c</name>
+    </fields>
+    <fields>
+        <label><!-- Maximum Transactions Allowed per Month --></label>
+        <name>Maximum_Transactions_Allowed_per_Month__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>
