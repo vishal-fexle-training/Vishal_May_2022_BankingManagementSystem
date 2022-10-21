@@ -43,13 +43,16 @@ public class GenerateTransactionPdfControllerTest {
         PageReference transactionPdfPage = new PageReference('/apex/generateTransactionPdf');
         transactionPdfPage.getParameters().put('id', objContact.Id);
         transactionPdfPage.getParameters().put('fromDate', '2022-10-01');
-        transactionPdfPage.getParameters().put('toDate', '2022-10-20');
+        transactionPdfPage.getParameters().put('toDate', '2022-10-30');
         
         Test.setCurrentPage(transactionPdfPage);
         
         GenerateTransactionPdfController objPdfController = new GenerateTransactionPdfController();
         objPdfController.generatePdf();
         Test.stopTest();
+
+        List<Transaction_Entry__c> listTransactionEntry = [Select Id from Transaction_Entry__c Where Contact__r.Id = :objContact.Id];
+        System.assertEquals(5, listTransactionEntry.size());
     } 
    
 }
