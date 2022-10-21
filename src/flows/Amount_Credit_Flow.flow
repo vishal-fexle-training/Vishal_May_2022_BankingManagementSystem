@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Amount_Credit_Email</name>
+        <label>Amount Credit Email</label>
+        <locationX>676</locationX>
+        <locationY>1823</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>AmountCreditEmail</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Contact_to_Update.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Amount Credited</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Amount_Debit_Email</name>
+        <label>Amount Debit Email</label>
+        <locationX>511</locationX>
+        <locationY>1055</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>AmountDebitTemplate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Contact_to_Update.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <stringValue>Amount Debited</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>55.0</apiVersion>
+    <decisions>
+        <name>Check_Cancelled_Debit_and_Credit</name>
+        <label>Check Cancelled Debit and Credit</label>
+        <locationX>863</locationX>
+        <locationY>695</locationY>
+        <defaultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Subtract_in_Available_Balance</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Cancelled_Debit</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Debit</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_in_Available_Balance</targetReference>
+            </connector>
+            <label>Check Cancelled Debit</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Complete_Debit_and_Credit</name>
+        <label>Check Complete Debit and Credit</label>
+        <locationX>225</locationX>
+        <locationY>695</locationY>
+        <defaultConnector>
+            <targetReference>Subtract_in_Available_Balance</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Complete_Credit</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Credit</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_in_Available_Balance</targetReference>
+            </connector>
+            <label>Check Complete Credit</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_EmailId</name>
+        <label>Check EmailId</label>
+        <locationX>379</locationX>
+        <locationY>935</locationY>
+        <defaultConnector>
+            <targetReference>Amount_Debit_Email</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Email_is_Null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Contact__r.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Email is Null</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_EmailId_1</name>
+        <label>Check EmailId 1</label>
+        <locationX>544</locationX>
+        <locationY>1703</locationY>
+        <defaultConnector>
+            <targetReference>Amount_Credit_Email</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Email_is_Null_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Contact__r.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Email is Null 1</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Status_Type</name>
+        <label>Check Status Type</label>
+        <locationX>544</locationX>
+        <locationY>575</locationY>
+        <defaultConnector>
+            <targetReference>Check_Cancelled_Debit_and_Credit</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Complete</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Completed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Complete_Debit_and_Credit</targetReference>
+            </connector>
+            <label>Check Complete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>To_stop_flow</name>
+        <label>To stop flow</label>
+        <locationX>176</locationX>
+        <locationY>335</locationY>
+        <defaultConnector>
+            <targetReference>Contact_to_Update</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Pending_to_Cancel</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pending</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Cancelled</stringValue>
+                </rightValue>
+            </conditions>
+            <label>Check Pending to Cancel</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>AddAmount</name>
+        <dataType>Currency</dataType>
+        <expression>{!Contact_to_Update.Available_Balance__c}+{!$Record.Amount__c}</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>SubtractAmount</name>
+        <dataType>Currency</dataType>
+        <expression>{!Contact_to_Update.Available_Balance__c}-{!$Record.Amount__c}</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>Amount Credit Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Amount Credit Debit Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Contact_to_Update</name>
+        <label>Contact to Update</label>
+        <locationX>544</locationX>
+        <locationY>455</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Status_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Contact__r.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Add_in_Available_Balance</name>
+        <label>Add in Available Balance</label>
+        <locationX>544</locationX>
+        <locationY>1583</locationY>
+        <connector>
+            <targetReference>Check_EmailId_1</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Contact__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Available_Balance__c</field>
+            <value>
+                <elementReference>AddAmount</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Contact</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Subtract_in_Available_Balance</name>
+        <label>Subtract in Available Balance</label>
+        <locationX>379</locationX>
+        <locationY>815</locationY>
+        <connector>
+            <targetReference>Check_EmailId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Contact__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Available_Balance__c</field>
+            <value>
+                <elementReference>SubtractAmount</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Contact</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>To_stop_flow</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <object>Transaction_Entry__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>AmountCreditEmail</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Dear Customer,
+ We wish to inform you that INR {!$Record.Amount__c} has been credited in your A/c no. {!Contact_to_Update.Account_Number__c} on {!$Record.Transaction_Date__c}.
+Available Balance is Rs. {!AddAmount}
+
+If you haven’t done this transaction please Call us at 1860-419-5555, 1860-500-5555
+− Transfer funds and pay online in a simple step using UPI. All this with exciting offers. Download our App today.
+− Have queries? Want to do fund transfers or bill payments? Now do all this with a simple chat. Use through our Mobile App or Website.
+− Get all your banking needs resolved through one app. Download our Mobile App today from the App Store/Play Store or give a missed call on 9243308900 to get the download link.
+
+Please do not reply to this mail as this is an automated mail service.</text>
+    </textTemplates>
+    <textTemplates>
+        <name>AmountDebitTemplate</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Dear Customer,
+We wish to inform you that INR {!$Record.Amount__c} has been debited from your A/c no. {!Contact_to_Update.Account_Number__c} on {!$Record.Transaction_Date__c}.
+Available Balance is Rs. {!SubtractAmount}
+
+If you haven’t done this transaction please Call us at 1860-419-5555, 1860-500-5555
+− Transfer funds and pay online in a simple step using UPI. All this with exciting offers. Download our App today.
+− Have queries? Want to do fund transfers or bill payments? Now do all this with a simple chat. Use through our Mobile App or Website.
+− Get all your banking needs resolved through one app. Download our Mobile App today from the App Store/Play Store or give a missed call on 9243308900 to get the download link.
+
+Please do not reply to this mail as this is an automated mail service.</text>
+    </textTemplates>
+    <variables>
+        <name>ContacttobeUpdate</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Contact</objectType>
+    </variables>
+</Flow>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Transaction Entry</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Transaction Entries</value>
+    </caseValues>
+    <fields>
+        <label><!-- Amount --></label>
+        <name>Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Case --></label>
+        <name>Case__c</name>
+        <relationshipLabel><!-- Transaction Entries --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Transaction Entries --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Cancelled</masterLabel>
+            <translation><!-- Cancelled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pending</masterLabel>
+            <translation><!-- Pending --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Transaction Date --></label>
+        <name>Transaction_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Credit</masterLabel>
+            <translation><!-- Credit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Debit</masterLabel>
+            <translation><!-- Debit --></translation>
+        </picklistValues>
+    </fields>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Transaction cannot be performed because Contact is Inactive! --></errorMessage>
+        <name>Check_Contact_Status_for_Tansaction</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Invalid Date selected! Select Today&apos;s Date --></errorMessage>
+        <name>Check_Entry_Date</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Cannot debit amount because Minimum Balance should be 3000. --></errorMessage>
+        <name>Check_Minimum_Balance</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Per Transaction limit exceeds ! --></errorMessage>
+        <name>Check_Per_Transaction_Limit</name>
+    </validationRules>
+</CustomObjectTranslation>
